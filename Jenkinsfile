@@ -1,10 +1,6 @@
 pipeline {
 
-  environment {
-    registry = "192.168.1.81:5000/justme/myweb"
-    dockerImage = ""
-  }
-
+ 
   agent any
 
   stages {
@@ -18,7 +14,8 @@ pipeline {
     stage('Build image') {
       steps{
         script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          dockerImage = docker.build("805054/new-repo:${env.BUILD_ID}")
+           
         }
       }
     }
@@ -26,8 +23,9 @@ pipeline {
     stage('Push Image') {
       steps{
         script {
-          docker.withRegistry( "" ) {
-            dockerImage.push()
+          docker.withRegistry('https://registry.hub.docker.com', 'Dockerhub') {
+                            myapp.push("latest")
+                            myapp.push("${env.BUILD_ID}")
           }
         }
       }
